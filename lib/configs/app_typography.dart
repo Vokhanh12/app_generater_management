@@ -1,4 +1,4 @@
-import 'package:app_generator_management/core/app/app_dementions.dart';
+import 'package:app_generator_management/configs/app_dementions.dart';
 import 'package:app_generator_management/core/constants/strings.dart';
 import 'package:flutter/material.dart';
 

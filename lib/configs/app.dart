@@ -1,7 +1,7 @@
 import 'package:app_generator_management/configs/app_typography.dart';
 import 'package:app_generator_management/configs/space.dart';
-import 'package:app_generator_management/core/app/app_dementions.dart';
-import 'package:app_generator_management/core/app/ui.dart';
+import 'package:app_generator_management/configs/app_dementions.dart';
+import 'package:app_generator_management/configs/ui.dart';
 import 'package:flutter/material.dart';
 
 class App {

@@ -1,8 +1,6 @@
 import 'package:app_generator_management/configs/app.dart';
-import 'package:app_generator_management/core/app/app_dementions.dart';
-import 'package:app_generator_management/core/constants/assets.dart';
-import 'package:app_generator_management/core/constants/color.dart';
-import 'package:app_generator_management/core/router/app_router.dart';
+import 'package:app_generator_management/presentation/sreens/dashboard.dart';
+import 'package:app_generator_management/presentation/widgets/custom_modal_progress_hub.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,8 +13,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   void _nextScreen() {
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRouter.ads,
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) =>
+              DashboardSceen(), // <- thay bằng widget thực tế
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
         (route) => false,
       );
     });
@@ -34,22 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     App.init(context);
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            AppAssets.splashPng,
-            fit: BoxFit.fitWidth,
-          ),
-          Positioned(
-            bottom: AppDimensions.normalize(205),
-            child: const CircularProgressIndicator(
-              color: AppColors.deepTeal,
-            ),
-          ),
-        ],
-      ),
-    );
+        body: CustomModalProgressHub(
+      child: SizedBox(),
+    ));
   }
 }
