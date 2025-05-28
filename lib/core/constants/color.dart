@@ -10,4 +10,6 @@ sealed class AppColors {
   static const Color commonAmber = Color(0xffFFCC50);
   static const Color unselectedButtonColor = Color(0xffEDEDED);
   static const Color transparentColor = Color(0xff484848); //with opacity 24%
+  static const kPrimaryColor = Color(0xFF6F35A5);
+  static const kPrimaryLightColor = Color(0xFFF1E6FF);
 }

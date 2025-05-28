@@ -85,4 +85,36 @@ class GeneratorTelemetry extends Equatable {
       'timestamp': Timestamp.fromDate(timestamp),
     };
   }
+
+  Map<String, dynamic> toJson() => {
+        'speed': speed,
+        'batteryVoltage': batteryVoltage,
+        'chargingVoltage': chargingVoltage,
+        'generatorFrequency': generatorFrequency,
+        'generatorVoltageL1': generatorVoltageL1,
+        'generatorVoltageL2': generatorVoltageL2,
+        'generatorVoltageL3': generatorVoltageL3,
+        'oilPressure': oilPressure,
+        'waterTemperature': waterTemperature,
+        'oilTemperature': oilTemperature,
+        'fuelLevel': fuelLevel,
+        'timestamp': timestamp.toIso8601String(),
+      };
+
+  factory GeneratorTelemetry.fromJson(Map<String, dynamic> json) {
+    return GeneratorTelemetry(
+      speed: json['speed'],
+      batteryVoltage: json['batteryVoltage'],
+      chargingVoltage: json['chargingVoltage'],
+      generatorFrequency: json['generatorFrequency'],
+      generatorVoltageL1: json['generatorVoltageL1'],
+      generatorVoltageL2: json['generatorVoltageL2'],
+      generatorVoltageL3: json['generatorVoltageL3'],
+      oilPressure: json['oilPressure'],
+      waterTemperature: json['waterTemperature'],
+      oilTemperature: json['oilTemperature'],
+      fuelLevel: json['fuelLevel'],
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
 }

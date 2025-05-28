@@ -1,5 +1,5 @@
 import 'package:app_generator_management/configs/app.dart';
-import 'package:app_generator_management/presentation/sreens/dashboard.dart';
+import 'package:app_generator_management/presentation/sreens/login.dart';
 import 'package:app_generator_management/presentation/widgets/custom_modal_progress_hub.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushAndRemoveUntil(
         PageRouteBuilder(
           pageBuilder: (_, __, ___) =>
-              DashboardSceen(), // <- thay bằng widget thực tế
+              LoginScreen(), // <- thay bằng widget thực tế
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ),

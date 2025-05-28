@@ -1,12 +1,7 @@
+import 'package:app_generator_management/models/chart/chart_data.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
-class ChartData {
-  final DateTime time;
-  final double temperature;
-
-  ChartData({required this.time, required this.temperature});
-}
 
 class CustomLiveLineChart extends StatelessWidget {
   final List<ChartData> dataSource;
@@ -17,13 +12,17 @@ class CustomLiveLineChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return SfCartesianChart(
       enableAxisAnimation: false,
-      title: ChartTitle(text: ''),
+      title: ChartTitle(text: 'Title'),
       primaryXAxis: DateTimeAxis(
         intervalType: DateTimeIntervalType.hours,
+        interval: 3,
+        dateFormat: DateFormat('MM/dd\nHH:mm'),
         edgeLabelPlacement: EdgeLabelPlacement.shift,
+        minimum: DateTime.now().subtract(Duration(days: 7)),
+        maximum: DateTime.now(),
       ),
       primaryYAxis: NumericAxis(
-        title: AxisTitle(text: ''),
+        title: AxisTitle(text: 'Title1'),
         minimum: 0,
         maximum: 100,
       ),

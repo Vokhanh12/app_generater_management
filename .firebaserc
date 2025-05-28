@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "generator": "app-genertor-mg",
+    "default": "app-genertor-mg"
+  },
+  "targets": {},
+  "etags": {}
+}

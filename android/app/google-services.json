@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "697316737966",
+    "project_id": "app-genertor-mg",
+    "storage_bucket": "app-genertor-mg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697316737966:android:a69fe1d79a9c59e51d3e3f",
+        "android_client_info": {
+          "package_name": "com.example.app_generator_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA44OwDFgilR3oVESRvmgpTEehgvwqtiZc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
