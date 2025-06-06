@@ -6,4 +6,5 @@ abstract class BaseGeneratorTelemetryRepository {
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn1D();
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn3D();
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn7D();
+  Future<void> ListGeneratorTelemetryUpdate({required void Function() onRealtimeUpdate});
 }

@@ -44,21 +44,9 @@ class _MyAppState extends State<MyApp> {
               authRepository: context.read<AuthRepository>(),
             )..add(InitializeAuthEvent()),
           ),
-          BlocProvider<GeneratorTelemetryBloc>(
-            create: (_) => GeneratorTelemetryBloc(
-                generatorTelemetryRepo:
-                    context.read<GeneratorTelemetryRepository>())
-              ..add(ListGeneratorTelemetryIn1H()),
-          ),
           BlocProvider(
             create: (context) =>
                 SignInBloc(authRepository: context.read<AuthRepository>()),
-          ),
-          BlocProvider<GeneratorTelemetryBloc>(
-            create: (_) => GeneratorTelemetryBloc(
-                generatorTelemetryRepo:
-                    context.read<GeneratorTelemetryRepository>())
-              ..add(ListGeneratorTelemetryIn3H()),
           ),
         ],
         child: MaterialApp(

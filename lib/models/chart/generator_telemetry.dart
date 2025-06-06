@@ -1,120 +1,201 @@
-import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 
 class GeneratorTelemetry extends Equatable {
-  final double speed;
-  final double batteryVoltage;
-  final double chargingVoltage;
-  final double generatorFrequency;
+  final String id;
 
-  final double generatorVoltageL1;
-  final double generatorVoltageL2;
-  final double generatorVoltageL3;
+  final double aqBatVol;
+  final double aqChrgVol;
+  final double consCur;
+  final double mainL1Vol;
+  final double mainL2Vol;
+  final double mainL3Vol;
+  final double avrPF;
 
-  final double oilPressure;
-  final double waterTemperature;
-  final double oilTemperature;
+  final double oilLvl;
+  final double oilPrssr;
+  final double wtrTemp;
+  final double oilTemp;
+  final int tlRunTime;
 
-  final double fuelLevel;
+  final String ndname;
+  final int ndErrCode;
+  final double ndBatVol;
+  final double ndCnctSts;
+  final bool ndEleSts;
 
-  final DateTime timestamp;
+  final DateTime createDate;
 
   const GeneratorTelemetry({
-    required this.speed,
-    required this.batteryVoltage,
-    required this.chargingVoltage,
-    required this.generatorFrequency,
-    required this.generatorVoltageL1,
-    required this.generatorVoltageL2,
-    required this.generatorVoltageL3,
-    required this.oilPressure,
-    required this.waterTemperature,
-    required this.oilTemperature,
-    required this.fuelLevel,
-    required this.timestamp,
+    required this.id,
+    required this.aqBatVol,
+    required this.aqChrgVol,
+    required this.consCur,
+    required this.mainL1Vol,
+    required this.mainL2Vol,
+    required this.mainL3Vol,
+    required this.avrPF,
+    required this.oilLvl,
+    required this.oilPrssr,
+    required this.wtrTemp,
+    required this.oilTemp,
+    required this.tlRunTime,
+    required this.ndname,
+    required this.ndErrCode,
+    required this.ndBatVol,
+    required this.ndCnctSts,
+    required this.ndEleSts,
+    required this.createDate,
   });
 
   @override
   List<Object?> get props => [
-        speed,
-        batteryVoltage,
-        chargingVoltage,
-        generatorFrequency,
-        generatorVoltageL1,
-        generatorVoltageL2,
-        generatorVoltageL3,
-        oilPressure,
-        waterTemperature,
-        oilTemperature,
-        fuelLevel,
-        timestamp,
+        id,
+        aqBatVol,
+        aqChrgVol,
+        consCur,
+        mainL1Vol,
+        mainL2Vol,
+        mainL3Vol,
+        avrPF,
+        oilLvl,
+        oilPrssr,
+        wtrTemp,
+        oilTemp,
+        tlRunTime,
+        ndname,
+        ndErrCode,
+        ndBatVol,
+        ndCnctSts,
+        ndEleSts,
+        createDate,
       ];
 
-  factory GeneratorTelemetry.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
-
+  factory GeneratorTelemetry.fromMap(String id, Map<String, dynamic> map) {
     return GeneratorTelemetry(
-      speed: (data['speed'] ?? 0).toDouble(),
-      batteryVoltage: (data['batteryVoltage'] ?? 0).toDouble(),
-      chargingVoltage: (data['chargingVoltage'] ?? 0).toDouble(),
-      generatorFrequency: (data['generatorFrequency'] ?? 0).toDouble(),
-      generatorVoltageL1: (data['generatorVoltageL1'] ?? 0).toDouble(),
-      generatorVoltageL2: (data['generatorVoltageL2'] ?? 0).toDouble(),
-      generatorVoltageL3: (data['generatorVoltageL3'] ?? 0).toDouble(),
-      oilPressure: (data['oilPressure'] ?? 0).toDouble(),
-      waterTemperature: (data['waterTemperature'] ?? 0).toDouble(),
-      oilTemperature: (data['oilTemperature'] ?? 0).toDouble(),
-      fuelLevel: (data['fuelLevel'] ?? 0).toDouble(),
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
+      id: id,
+      aqBatVol: (map['AqBatVol'] ?? 0).toDouble(),
+      aqChrgVol: (map['AqChrgVol'] ?? 0).toDouble(),
+      consCur: (map['ConsCur'] ?? 0).toDouble(),
+      mainL1Vol: (map['MainL1Vol'] ?? 0).toDouble(),
+      mainL2Vol: (map['MainL2Vol'] ?? 0).toDouble(),
+      mainL3Vol: (map['MainL3Vol'] ?? 0).toDouble(),
+      avrPF: (map['AvrPF'] ?? 0).toDouble(),
+      oilLvl: (map['OilLvl'] ?? 0).toDouble(),
+      oilPrssr: (map['OilPrssr'] ?? 0).toDouble(),
+      wtrTemp: (map['WtrTemp'] ?? 0).toDouble(),
+      oilTemp: (map['OilTemp'] ?? 0).toDouble(),
+      tlRunTime: (map['TlRunTime'] ?? 0).toInt(),
+      ndname: (map['Ndname'] ?? '').toString(),
+      ndErrCode: (map['NdErrCode'] ?? 0).toInt(),
+      ndBatVol: (map['NdBatVol'] ?? 0).toDouble(),
+      ndCnctSts: (map['NdCnctSts'] ?? 0).toDouble(),
+      ndEleSts: (map['NdEleSts'] ?? 0) == 1,
+      createDate: _parseDate(map['CreateDate']),
+    );
+  }
+
+  factory GeneratorTelemetry.fromSnapshot(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return GeneratorTelemetry(
+      id: doc.id,
+      aqBatVol: (data['AqBatVol'] ?? 0).toDouble(),
+      aqChrgVol: (data['AqChrgVol'] ?? 0).toDouble(),
+      consCur: (data['ConsCur'] ?? 0).toDouble(),
+      mainL1Vol: (data['MainL1Vol'] ?? 0).toDouble(),
+      mainL2Vol: (data['MainL2Vol'] ?? 0).toDouble(),
+      mainL3Vol: (data['MainL3Vol'] ?? 0).toDouble(),
+      avrPF: (data['AvrPF'] ?? 0).toDouble(),
+      oilLvl: (data['OilLvl'] ?? 0).toDouble(),
+      oilPrssr: (data['OilPrssr'] ?? 0).toDouble(),
+      wtrTemp: (data['WtrTemp'] ?? 0).toDouble(),
+      oilTemp: (data['OilTemp'] ?? 0).toDouble(),
+      tlRunTime: (data['TlRunTime'] ?? 0).toInt(),
+      ndname: (data['Ndname'] ?? '').toString(),
+      ndErrCode: (data['NdErrCode'] ?? 0).toInt(),
+      ndBatVol: (data['NdBatVol'] ?? 0).toDouble(),
+      ndCnctSts: (data['NdCnctSts'] ?? 0).toDouble(),
+      ndEleSts: (data['NdEleSts'] ?? false),
+      createDate: (data['CreateDate'] as Timestamp).toDate(),
     );
   }
 
   Map<String, dynamic> toDocument() {
     return {
-      'speed': speed,
-      'batteryVoltage': batteryVoltage,
-      'chargingVoltage': chargingVoltage,
-      'generatorFrequency': generatorFrequency,
-      'generatorVoltageL1': generatorVoltageL1,
-      'generatorVoltageL2': generatorVoltageL2,
-      'generatorVoltageL3': generatorVoltageL3,
-      'oilPressure': oilPressure,
-      'waterTemperature': waterTemperature,
-      'oilTemperature': oilTemperature,
-      'fuelLevel': fuelLevel,
-      'timestamp': Timestamp.fromDate(timestamp),
+      'AqBatVol': aqBatVol,
+      'AqChrgVol': aqChrgVol,
+      'ConsCur': consCur,
+      'MainL1Vol': mainL1Vol,
+      'MainL2Vol': mainL2Vol,
+      'MainL3Vol': mainL3Vol,
+      'AvrPF': avrPF,
+      'OilLvl': oilLvl,
+      'OilPrssr': oilPrssr,
+      'WtrTemp': wtrTemp,
+      'OilTemp': oilTemp,
+      'TlRunTime': tlRunTime,
+      'Ndname': ndname,
+      'NdErrCode': ndErrCode,
+      'NdBatVol': ndBatVol,
+      'NdCnctSts': ndCnctSts,
+      'NdEleSts': ndEleSts,
+      'CreateDate': Timestamp.fromDate(createDate),
     };
   }
 
-  Map<String, dynamic> toJson() => {
-        'speed': speed,
-        'batteryVoltage': batteryVoltage,
-        'chargingVoltage': chargingVoltage,
-        'generatorFrequency': generatorFrequency,
-        'generatorVoltageL1': generatorVoltageL1,
-        'generatorVoltageL2': generatorVoltageL2,
-        'generatorVoltageL3': generatorVoltageL3,
-        'oilPressure': oilPressure,
-        'waterTemperature': waterTemperature,
-        'oilTemperature': oilTemperature,
-        'fuelLevel': fuelLevel,
-        'timestamp': timestamp.toIso8601String(),
-      };
-
   factory GeneratorTelemetry.fromJson(Map<String, dynamic> json) {
     return GeneratorTelemetry(
-      speed: json['speed'],
-      batteryVoltage: json['batteryVoltage'],
-      chargingVoltage: json['chargingVoltage'],
-      generatorFrequency: json['generatorFrequency'],
-      generatorVoltageL1: json['generatorVoltageL1'],
-      generatorVoltageL2: json['generatorVoltageL2'],
-      generatorVoltageL3: json['generatorVoltageL3'],
-      oilPressure: json['oilPressure'],
-      waterTemperature: json['waterTemperature'],
-      oilTemperature: json['oilTemperature'],
-      fuelLevel: json['fuelLevel'],
-      timestamp: DateTime.parse(json['timestamp']),
+      id: json['id'],
+      aqBatVol: json['AqBatVol']?.toDouble() ?? 0,
+      aqChrgVol: json['AqChrgVol']?.toDouble() ?? 0,
+      consCur: json['ConsCur']?.toDouble() ?? 0,
+      mainL1Vol: json['MainL1Vol']?.toDouble() ?? 0,
+      mainL2Vol: json['MainL2Vol']?.toDouble() ?? 0,
+      mainL3Vol: json['MainL3Vol']?.toDouble() ?? 0,
+      avrPF: json['AvrPF']?.toDouble() ?? 0,
+      oilLvl: json['OilLvl']?.toDouble() ?? 0,
+      oilPrssr: json['OilPrssr']?.toDouble() ?? 0,
+      wtrTemp: json['WtrTemp']?.toDouble() ?? 0,
+      oilTemp: json['OilTemp']?.toDouble() ?? 0,
+      tlRunTime: json['TlRunTime']?.toInt() ?? 0,
+      ndname: json['Ndname'] ?? '',
+      ndErrCode: json['NdErrCode']?.toInt() ?? 0,
+      ndBatVol: json['NdBatVol']?.toDouble() ?? 0,
+      ndCnctSts: json['NdCnctSts']?.toDouble() ?? 0,
+      ndEleSts: json['NdEleSts'] ?? false,
+      createDate: DateTime.parse(json['CreateDate']),
     );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'AqBatVol': aqBatVol,
+        'AqChrgVol': aqChrgVol,
+        'ConsCur': consCur,
+        'MainL1Vol': mainL1Vol,
+        'MainL2Vol': mainL2Vol,
+        'MainL3Vol': mainL3Vol,
+        'AvrPF': avrPF,
+        'OilLvl': oilLvl,
+        'OilPrssr': oilPrssr,
+        'WtrTemp': wtrTemp,
+        'OilTemp': oilTemp,
+        'TlRunTime': tlRunTime,
+        'Ndname': ndname,
+        'NdErrCode': ndErrCode,
+        'NdBatVol': ndBatVol,
+        'NdCnctSts': ndCnctSts,
+        'NdEleSts': ndEleSts,
+        'CreateDate': createDate.toIso8601String(),
+      };
+
+  static DateTime _parseDate(String? value) {
+    if (value == null) return DateTime.now();
+    try {
+      return DateFormat("dd/MM/yyyy-HH:mm:ss").parse(value);
+    } catch (_) {
+      return DateTime.now();
+    }
   }
 }

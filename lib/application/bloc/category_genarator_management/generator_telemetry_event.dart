@@ -16,3 +16,7 @@ class ListGeneratorTelemetryIn1D extends GeneratorTelemetryEvent {}
 class ListGeneratorTelemetryIn3D extends GeneratorTelemetryEvent {}
 
 class ListGeneratorTelemetryIn7D extends GeneratorTelemetryEvent {}
+
+class ListGeneratorTelemetryUpdate extends GeneratorTelemetryEvent {}
+
+class GeneratorTelemetryRealtimeUpdated extends GeneratorTelemetryEvent {}

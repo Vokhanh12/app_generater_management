@@ -1,67 +1,129 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:app_generator_management/models/chart/generator_telemetry.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 
 part 'base_generator_telemetry_repo.dart';
 
 class GeneratorTelemetryRepository extends BaseGeneratorTelemetryRepository {
-  final CollectionReference addressCollection =
-      FirebaseFirestore.instance.collection('addresses');
-
-  @override
-  Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn1D() async {
-    final jsonString =
-        await rootBundle.loadString('json/generator_data_1_days.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
-
-    return jsonList
-        .map((jsonItem) => GeneratorTelemetry.fromJson(jsonItem))
-        .toList();
-  }
+  final List<GeneratorTelemetry> _generatorTelemetry = [];
+  StreamSubscription<DatabaseEvent>? _subscription;
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn1H() async {
-    final jsonString =
-        await rootBundle.loadString('json/generator_data_1_hours.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
+    final now = DateTime.now();
+    final oneHourAgo = now.subtract(const Duration(hours: 1));
 
-    return jsonList
-        .map((jsonItem) => GeneratorTelemetry.fromJson(jsonItem))
+    final recentTelemetry = _generatorTelemetry
+        .where((item) => item.createDate.isAfter(oneHourAgo))
         .toList();
-  }
 
-  @override
-  Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn3D() async {
-    final jsonString =
-        await rootBundle.loadString('json/generator_data_3_days.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
+    print('Filtered Telemetry (past 1 hour): $recentTelemetry');
 
-    return jsonList
-        .map((jsonItem) => GeneratorTelemetry.fromJson(jsonItem))
-        .toList();
+    return recentTelemetry;
   }
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn3H() async {
-    final jsonString =
-        await rootBundle.loadString('json/generator_data_3_hours.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
+    final now = DateTime.now();
+    final threeHoursAgo = now.subtract(const Duration(hours: 3));
 
-    return jsonList
-        .map((jsonItem) => GeneratorTelemetry.fromJson(jsonItem))
+    final recentTelemetry = _generatorTelemetry
+        .where((item) => item.createDate.isAfter(threeHoursAgo))
         .toList();
+
+    print('Filtered Telemetry (past 3 hours): $recentTelemetry');
+
+    return recentTelemetry;
+  }
+
+  @override
+  Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn1D() async {
+    final now = DateTime.now();
+    final oneDayAgo = now.subtract(const Duration(days: 1));
+
+    final recentTelemetry = _generatorTelemetry
+        .where((item) => item.createDate.isAfter(oneDayAgo))
+        .toList();
+
+    print('Filtered Telemetry (past 1 day): $recentTelemetry');
+
+    return recentTelemetry;
+  }
+
+  @override
+  Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn3D() async {
+    final now = DateTime.now();
+    final threeDaysAgo = now.subtract(const Duration(days: 3));
+
+    final recentTelemetry = _generatorTelemetry
+        .where((item) => item.createDate.isAfter(threeDaysAgo))
+        .toList();
+
+    print('Filtered Telemetry (past 3 days): $recentTelemetry');
+
+    return recentTelemetry;
   }
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn7D() async {
-    final jsonString =
-        await rootBundle.loadString('json/generator_data_7_days.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
+    final now = DateTime.now();
+    final sevenDaysAgo = now.subtract(const Duration(days: 7));
 
-    return jsonList
-        .map((jsonItem) => GeneratorTelemetry.fromJson(jsonItem))
+    final recentTelemetry = _generatorTelemetry
+        .where((item) => item.createDate.isAfter(sevenDaysAgo))
         .toList();
+
+    print('Filtered Telemetry (past 7 days): $recentTelemetry');
+
+    return recentTelemetry;
+  }
+
+  @override
+  Future<void> ListGeneratorTelemetryUpdate({
+    required void Function() onRealtimeUpdate,
+  }) async {
+    try {
+      DatabaseReference ref = FirebaseDatabase.instance.ref("document");
+
+      _subscription?.cancel();
+
+      _subscription = ref.onValue.listen(
+        (DatabaseEvent event) {
+          final data = event.snapshot.value as Map<dynamic, dynamic>?;
+
+          if (data != null) {
+            _generatorTelemetry.clear();
+
+            data.forEach((key, value) {
+              if (value is Map) {
+                final telemetry = GeneratorTelemetry.fromMap(
+                  key,
+                  Map<String, dynamic>.from(value),
+                );
+                _generatorTelemetry.add(telemetry);
+              }
+            });
+
+            print('✅ Real-time update: ${_generatorTelemetry.length} records');
+
+            /// GỌI CALLBACK MỖI LẦN UPDATE
+            onRealtimeUpdate();
+          }
+        },
+        onError: (error) {
+          print('❌ Real-time listener error: $error');
+        },
+      );
+    } catch (e) {
+      print('❌ Error setting up real-time listener: $e');
+    }
+  }
+
+  void dispose() {
+    _subscription?.cancel();
+    print('🔌 Listener cancelled');
   }
 }

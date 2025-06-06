@@ -14,11 +14,13 @@ class FilterableLineChart extends StatefulWidget {
       {super.key,
       required this.fieldName,
       required this.chartTitle,
-      required this.axisTitle});
+      required this.axisTitle,
+      required this.bloc});
 
   final String fieldName;
   final String chartTitle;
   final String axisTitle;
+  final GeneratorTelemetryBloc bloc;
 
   @override
   State<FilterableLineChart> createState() => _FilterableLineChartState();
@@ -39,13 +41,10 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => GeneratorTelemetryBloc(
-          generatorTelemetryRepo: context.read<GeneratorTelemetryRepository>())
-        ..add(ListGeneratorTelemetryIn1H()),
+    return BlocProvider.value(
+      value: widget.bloc,
       child: Builder(builder: (context) {
-        return BlocConsumer<GeneratorTelemetryBloc, GeneratorTelemetryState>(
-          listener: (context, state) {},
+        return BlocBuilder<GeneratorTelemetryBloc, GeneratorTelemetryState>(
           builder: (context, state) {
             if (state is GeneratorTelemetryLoading &&
                 state.type == generatorTelemetryType) {
@@ -82,7 +81,7 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
                                 fontWeight: FontWeight.w900,
                                 fontFamily: 'Roboto')),
                         primaryXAxis: DateTimeAxis(
-                          minimum: dateTime ?? null,
+                          minimum: dateTime,
                           intervalType: _dateTimeIntervalType,
                           interval: _interval,
                           dateFormat: _dateFormat,
@@ -90,14 +89,13 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
                         primaryYAxis: NumericAxis(
                           title: AxisTitle(text: widget.axisTitle),
                           minimum: 0,
-                          maximum: 100,
                           majorGridLines: const MajorGridLines(width: 0),
                         ),
                         series: <CartesianSeries>[
                           LineSeries<GeneratorTelemetry, DateTime>(
                               dataSource: state.data,
                               xValueMapper: (GeneratorTelemetry data, _) =>
-                                  data.timestamp,
+                                  data.createDate,
                               yValueMapper: (GeneratorTelemetry data, _) =>
                                   data.toJson()[widget.fieldName] as double,
                               dataLabelSettings:
@@ -121,11 +119,11 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
   }
 
   void changeMode1H(BuildContext context) {
-    _interval = 10;
-    _dateFormat = DateFormat('HH:mm');
-    _dateTimeIntervalType = DateTimeIntervalType.minutes;
-    generatorTelemetryType = GeneratorTelemetryType.oneHour;
-    context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn1H());
+    // _interval = 10;
+    // _dateFormat = DateFormat('HH:mm');
+    // _dateTimeIntervalType = DateTimeIntervalType.minutes;
+    // generatorTelemetryType = GeneratorTelemetryType.oneHour;
+    // context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn1H());
   }
 
   void changeMode3H(BuildContext context) {
@@ -141,7 +139,6 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
     _dateFormat = DateFormat('HH:mm');
     _dateTimeIntervalType = DateTimeIntervalType.hours;
     generatorTelemetryType = GeneratorTelemetryType.oneDay;
-
     context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn1D());
   }
 

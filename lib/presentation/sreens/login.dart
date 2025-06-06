@@ -40,6 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _emailController.text = "test@gmail.com";
+    _passwordController.text = "12345678";
     return Background(
       child: SingleChildScrollView(
         child: Row(

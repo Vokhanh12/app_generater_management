@@ -12,7 +12,8 @@ part 'generator_telemetry_state.dart';
 class GeneratorTelemetryBloc
     extends Bloc<GeneratorTelemetryEvent, GeneratorTelemetryState> {
   final BaseGeneratorTelemetryRepository _generatorTelemetryRepo;
-  StreamSubscription? _streamSubscription;
+  final completer = Completer<void>();
+  bool isCompleted = false;
 
   GeneratorTelemetryBloc({
     required BaseGeneratorTelemetryRepository generatorTelemetryRepo,
@@ -30,6 +31,14 @@ class GeneratorTelemetryBloc
         _loadTelemetry3D(event, emit, GeneratorTelemetryType.threeDays));
     on<ListGeneratorTelemetryIn7D>((event, emit) =>
         _loadTelemetry7D(event, emit, GeneratorTelemetryType.sevenDays));
+    on<ListGeneratorTelemetryUpdate>((event, emit) =>
+        _loadTelemetryUpdate(event, emit, GeneratorTelemetryType.update));
+
+    _generatorTelemetryRepo.ListGeneratorTelemetryUpdate(
+      onRealtimeUpdate: () {
+        add(GeneratorTelemetryRealtimeUpdated());
+      },
+    );
   }
 
   Future<void> _loadTelemetry1H(
@@ -99,6 +108,35 @@ class GeneratorTelemetryBloc
     } catch (e) {
       emit(GeneratorTelemetryError(
           message: e.toString(), type: generatorTelemetryType));
+    }
+  }
+
+  Future<void> _loadTelemetryUpdate(
+    GeneratorTelemetryEvent event,
+    Emitter<GeneratorTelemetryState> emit,
+    GeneratorTelemetryType generatorTelemetryType,
+  ) async {
+    emit(GeneratorTelemetryLoading(type: generatorTelemetryType));
+
+    try {
+      emit(GeneratorTelemetryUpdateLoading(type: generatorTelemetryType));
+      await _generatorTelemetryRepo.ListGeneratorTelemetryUpdate(
+        onRealtimeUpdate: () {
+              if (!isCompleted) {
+            isCompleted = true;
+            completer.complete();
+          }
+        },
+      );
+
+      await completer.future;
+
+      emit(GeneratorTelemetryUpdateSuccess(type: generatorTelemetryType));
+    } catch (e) {
+      emit(GeneratorTelemetryError(
+        message: e.toString(),
+        type: generatorTelemetryType,
+      ));
     }
   }
 }

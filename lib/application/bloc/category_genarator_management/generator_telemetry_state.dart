@@ -6,7 +6,8 @@ enum GeneratorTelemetryType {
   threeHour,
   oneDay,
   threeDays,
-  sevenDays
+  sevenDays,
+  update
 }
 
 abstract class GeneratorTelemetryState extends Equatable {
@@ -45,6 +46,27 @@ class GeneratorTelemetryLoaded extends GeneratorTelemetryState {
   @override
   List<Object> get props => [data];
 }
+
+class GeneratorTelemetryUpdateLoading extends GeneratorTelemetryState {
+
+  const GeneratorTelemetryUpdateLoading({
+    required GeneratorTelemetryType type,
+  }) : super(type);
+
+  @override
+  List<Object> get props => [];
+}
+
+class GeneratorTelemetryUpdateSuccess extends GeneratorTelemetryState {
+
+  const GeneratorTelemetryUpdateSuccess({
+    required GeneratorTelemetryType type,
+  }) : super(type);
+
+  @override
+  List<Object> get props => [];
+}
+
 
 class GeneratorTelemetryError extends GeneratorTelemetryState {
   final String message;

@@ -58,8 +58,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '697316737966',
     projectId: 'app-genertor-mg',
     authDomain: 'app-genertor-mg.firebaseapp.com',
+    databaseURL: 'https://app-genertor-mg-default-rtdb.firebaseio.com/',
     storageBucket: 'app-genertor-mg.firebasestorage.app',
     measurementId: 'G-NG8E4Z5WW0',
   );
-
 }
