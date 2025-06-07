@@ -46,6 +46,8 @@ dependencies:
   cloud_firestore: ^5.6.7
   flutter_svg: ^2.1.0
   firebase_database: ^11.3.6
+  awesome_snackbar_content: ^0.1.6
+  awesome_dialog: ^3.2.1
 
 dev_dependencies:
   flutter_test:

@@ -28,7 +28,11 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
           .then((value) {
         if (value) {
           emit(state.copyWith(status: SignInStatus.success));
+        } else {
+          emit(state.copyWith(status: SignInStatus.error, error: CustomError(message: "Đăng nhập thất bại")));
         }
+
+
       });
     } catch (e) {
       emit(state.copyWith(

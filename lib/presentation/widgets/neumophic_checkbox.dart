@@ -29,7 +29,7 @@ class _NeumorphicCheckBoxState extends State<NeumorphicCheckBox> {
             NeumorphicCircle(
               innerShadow: true,
               outerShadow: false,
-              highlightColor: Colors.white.withOpacity(0.5),
+              highlightColor: Colors.white.withOpacity(0.3),
               shadowColor: Colors.white,
               backgroundColor: Colors.white,
               boderColor: Colors.black,
@@ -43,7 +43,7 @@ class _NeumorphicCheckBoxState extends State<NeumorphicCheckBox> {
                       outerShadow: true,
                       highlightColor: Colors.transparent,
                       shadowColor: Colors.transparent,
-                      backgroundColor: Colors.amber,
+                      backgroundColor: Colors.blue,
                       boderColor: Colors.black,
                     ),
                   )

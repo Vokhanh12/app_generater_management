@@ -1,76 +1,153 @@
+import 'package:app_generator_management/application/bloc/category_genarator_management/generator_telemetry_bloc.dart';
+import 'package:app_generator_management/models/chart/generator_telemetry.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StatusItem extends StatelessWidget {
   final String title;
   final String? category;
   final String amount;
   final String? imgUrl;
+  final GeneratorTelemetryBloc bloc;
+
+  
 
   const StatusItem(
       {super.key,
       required this.title,
       this.category,
       required this.amount,
-      this.imgUrl});
+      this.imgUrl,
+      required this.bloc,
+      });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-            color: Colors.white.withOpacity(0.05),
-            offset: const Offset(-10, -10),
-            spreadRadius: 0,
-            blurRadius: 10),
-      ]),
-      child: Row(
-        children: [
-          SizedBox(
-              height: 60,
-              width: 60,
-              child: NeumorphicCircle(
-                innerShadow: false,
-                outerShadow: true,
-                backgroundColor: Colors.white,
-                shadowColor: Colors.white,
-                highlightColor: Colors.white.withOpacity(0.05),
-                child: Image.asset(imgUrl ?? 'none', width: 50, height: 50),
-              )),
-          const SizedBox(
-            width: 16,
-          ),
-          Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              (category == null)
-                  ? const SizedBox.shrink()
-                  : Text(category!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+
+  List<GeneratorTelemetry> defaultGeneratorTelemetries = [
+    GeneratorTelemetry(
+      id: 'none',
+      aqBatVol: 0,
+      aqChrgVol: 0,
+      consCur: 0,
+      mainL1Vol: 0,
+      mainL2Vol: 0,
+      mainL3Vol: 0,
+      avrPF: 0,
+      oilLvl: 0,
+      oilPrssr: 0,
+      wtrTemp: 0,
+      oilTemp: 0,
+      tlRunTime: 0,
+      ndname: 'No data',
+      ndErrCode: 0,
+      ndBatVol: 0,
+      ndCnctSts: 0,
+      ndEleSts: false,
+      createDate: DateTime.now(),
+    ),
+    GeneratorTelemetry(
+      id: 'none',
+      aqBatVol: 0,
+      aqChrgVol: 0,
+      consCur: 0,
+      mainL1Vol: 0,
+      mainL2Vol: 0,
+      mainL3Vol: 0,
+      avrPF: 0,
+      oilLvl: 0,
+      oilPrssr: 0,
+      wtrTemp: 0,
+      oilTemp: 0,
+      tlRunTime: 0,
+      ndname: 'none',
+      ndErrCode: 0,
+      ndBatVol: 0,
+      ndCnctSts: 0,
+      ndEleSts: false,
+      createDate: DateTime.now().subtract(Duration(seconds: 1)),
+    )
+  ];
+
+
+
+    return BlocProvider.value(
+      value: bloc,
+      child: BlocBuilder<GeneratorTelemetryBloc, GeneratorTelemetryState>(
+        builder: (context, state) {
+          if (state is GeneratorTelemetryLoaded) {
+          List<GeneratorTelemetry> list;
+          if (state.data.length != 0) {
+            list = state.data;
+          } else {
+            list = defaultGeneratorTelemetries;
+          }
+
+          GeneratorTelemetry data = list
+                .reduce((a, b) => a.createDate.isAfter(b.createDate) ? a : b);
+
+            return Container(
+              height: 100,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(
+                    color: Colors.white.withOpacity(0.05),
+                    offset: const Offset(-10, -10),
+                    spreadRadius: 0,
+                    blurRadius: 10),
+              ]),
+              child: Row(
+                children: [
+                  SizedBox(
+                      height: 60,
+                      width: 60,
+                      child: NeumorphicCircle(
+                        innerShadow: false,
+                        outerShadow: true,
+                        backgroundColor: Colors.white,
+                        shadowColor: Colors.white,
+                        highlightColor: Colors.white.withOpacity(0.05),
+                        child: Image.asset(imgUrl ?? 'none',
+                            width: 50, height: 50),
+                      )),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      (data?.toJson()[category] == null)
+                          ? const SizedBox.shrink()
+                          : Text(data!.toJson()[category].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600))
+                    ],
+                  )),
+                  Text(amount,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
                           fontWeight: FontWeight.w600))
-            ],
-          )),
-          Text(amount,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600))
-        ],
+                ],
+              ),
+            );
+          }
+          return Container();
+        },
       ),
     );
   }

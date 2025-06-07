@@ -33,6 +33,14 @@ class GeneratorTelemetryBloc
         _loadTelemetry7D(event, emit, GeneratorTelemetryType.sevenDays));
     on<ListGeneratorTelemetryUpdate>((event, emit) =>
         _loadTelemetryUpdate(event, emit, GeneratorTelemetryType.update));
+    on<GeneratorTelemetryRealtimeUpdated>((event, emit) async {
+      final data = await _generatorTelemetryRepo.getLatest();
+      emit(GeneratorTelemetryLoaded(
+        data: data,
+        type: GeneratorTelemetryType.update,
+      ));
+      emit(GeneratorTelemetryUpdateSuccess(type: GeneratorTelemetryType.update));
+    });
 
     _generatorTelemetryRepo.ListGeneratorTelemetryUpdate(
       onRealtimeUpdate: () {
@@ -122,16 +130,10 @@ class GeneratorTelemetryBloc
       emit(GeneratorTelemetryUpdateLoading(type: generatorTelemetryType));
       await _generatorTelemetryRepo.ListGeneratorTelemetryUpdate(
         onRealtimeUpdate: () {
-              if (!isCompleted) {
-            isCompleted = true;
-            completer.complete();
-          }
+          add(GeneratorTelemetryRealtimeUpdated());
         },
       );
-
       await completer.future;
-
-      emit(GeneratorTelemetryUpdateSuccess(type: generatorTelemetryType));
     } catch (e) {
       emit(GeneratorTelemetryError(
         message: e.toString(),
@@ -139,4 +141,6 @@ class GeneratorTelemetryBloc
       ));
     }
   }
+
+
 }

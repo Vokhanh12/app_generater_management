@@ -91,7 +91,9 @@ class GeneratorTelemetry extends Equatable {
       ndErrCode: (map['NdErrCode'] ?? 0).toInt(),
       ndBatVol: (map['NdBatVol'] ?? 0).toDouble(),
       ndCnctSts: (map['NdCnctSts'] ?? 0).toDouble(),
-      ndEleSts: (map['NdEleSts'] ?? 0) == 1,
+      ndEleSts: map['NdEleSts'] is bool
+          ? map['NdEleSts']
+          : map['NdEleSts'] == 1, // nếu int 1 thì true
       createDate: _parseDate(map['CreateDate']),
     );
   }
@@ -116,55 +118,34 @@ class GeneratorTelemetry extends Equatable {
       ndErrCode: (data['NdErrCode'] ?? 0).toInt(),
       ndBatVol: (data['NdBatVol'] ?? 0).toDouble(),
       ndCnctSts: (data['NdCnctSts'] ?? 0).toDouble(),
-      ndEleSts: (data['NdEleSts'] ?? false),
-      createDate: (data['CreateDate'] as Timestamp).toDate(),
+      ndEleSts: data['NdEleSts'] is bool ? data['NdEleSts'] : false,
+      createDate: (data['CreateDate'] is Timestamp)
+          ? (data['CreateDate'] as Timestamp).toDate()
+          : _parseDate(data['CreateDate']),
     );
-  }
-
-  Map<String, dynamic> toDocument() {
-    return {
-      'AqBatVol': aqBatVol,
-      'AqChrgVol': aqChrgVol,
-      'ConsCur': consCur,
-      'MainL1Vol': mainL1Vol,
-      'MainL2Vol': mainL2Vol,
-      'MainL3Vol': mainL3Vol,
-      'AvrPF': avrPF,
-      'OilLvl': oilLvl,
-      'OilPrssr': oilPrssr,
-      'WtrTemp': wtrTemp,
-      'OilTemp': oilTemp,
-      'TlRunTime': tlRunTime,
-      'Ndname': ndname,
-      'NdErrCode': ndErrCode,
-      'NdBatVol': ndBatVol,
-      'NdCnctSts': ndCnctSts,
-      'NdEleSts': ndEleSts,
-      'CreateDate': Timestamp.fromDate(createDate),
-    };
   }
 
   factory GeneratorTelemetry.fromJson(Map<String, dynamic> json) {
     return GeneratorTelemetry(
-      id: json['id'],
-      aqBatVol: json['AqBatVol']?.toDouble() ?? 0,
-      aqChrgVol: json['AqChrgVol']?.toDouble() ?? 0,
-      consCur: json['ConsCur']?.toDouble() ?? 0,
-      mainL1Vol: json['MainL1Vol']?.toDouble() ?? 0,
-      mainL2Vol: json['MainL2Vol']?.toDouble() ?? 0,
-      mainL3Vol: json['MainL3Vol']?.toDouble() ?? 0,
-      avrPF: json['AvrPF']?.toDouble() ?? 0,
-      oilLvl: json['OilLvl']?.toDouble() ?? 0,
-      oilPrssr: json['OilPrssr']?.toDouble() ?? 0,
-      wtrTemp: json['WtrTemp']?.toDouble() ?? 0,
-      oilTemp: json['OilTemp']?.toDouble() ?? 0,
-      tlRunTime: json['TlRunTime']?.toInt() ?? 0,
-      ndname: json['Ndname'] ?? '',
-      ndErrCode: json['NdErrCode']?.toInt() ?? 0,
-      ndBatVol: json['NdBatVol']?.toDouble() ?? 0,
-      ndCnctSts: json['NdCnctSts']?.toDouble() ?? 0,
-      ndEleSts: json['NdEleSts'] ?? false,
-      createDate: DateTime.parse(json['CreateDate']),
+      id: json['id'] ?? '',
+      aqBatVol: (json['AqBatVol'] ?? 0).toDouble(),
+      aqChrgVol: (json['AqChrgVol'] ?? 0).toDouble(),
+      consCur: (json['ConsCur'] ?? 0).toDouble(),
+      mainL1Vol: (json['MainL1Vol'] ?? 0).toDouble(),
+      mainL2Vol: (json['MainL2Vol'] ?? 0).toDouble(),
+      mainL3Vol: (json['MainL3Vol'] ?? 0).toDouble(),
+      avrPF: (json['AvrPF'] ?? 0).toDouble(),
+      oilLvl: (json['OilLvl'] ?? 0).toDouble(),
+      oilPrssr: (json['OilPrssr'] ?? 0).toDouble(),
+      wtrTemp: (json['WtrTemp'] ?? 0).toDouble(),
+      oilTemp: (json['OilTemp'] ?? 0).toDouble(),
+      tlRunTime: (json['TlRunTime'] ?? 0).toInt(),
+      ndname: (json['Ndname'] ?? '').toString(),
+      ndErrCode: (json['NdErrCode'] ?? 0).toInt(),
+      ndBatVol: (json['NdBatVol'] ?? 0).toDouble(),
+      ndCnctSts: (json['NdCnctSts'] ?? 0).toDouble(),
+      ndEleSts: json['NdEleSts'] is bool ? json['NdEleSts'] : false,
+      createDate: _parseDate(json['CreateDate']),
     );
   }
 
@@ -187,15 +168,59 @@ class GeneratorTelemetry extends Equatable {
         'NdBatVol': ndBatVol,
         'NdCnctSts': ndCnctSts,
         'NdEleSts': ndEleSts,
-        'CreateDate': createDate.toIso8601String(),
+        'CreateDate': DateFormat("dd/MM/yyyy-HH:mm:ss").format(createDate),
       };
 
   static DateTime _parseDate(String? value) {
-    if (value == null) return DateTime.now();
+    if (value == null || value.isEmpty) return DateTime(2000);
     try {
       return DateFormat("dd/MM/yyyy-HH:mm:ss").parse(value);
-    } catch (_) {
-      return DateTime.now();
+    } catch (e) {
+      return DateTime(2000);
     }
+  }
+
+  GeneratorTelemetry copyWith({
+    String? id,
+    double? aqBatVol,
+    double? aqChrgVol,
+    double? consCur,
+    double? mainL1Vol,
+    double? mainL2Vol,
+    double? mainL3Vol,
+    double? avrPF,
+    double? oilLvl,
+    double? oilPrssr,
+    double? wtrTemp,
+    double? oilTemp,
+    int? tlRunTime,
+    String? ndname,
+    int? ndErrCode,
+    double? ndBatVol,
+    double? ndCnctSts,
+    bool? ndEleSts,
+    DateTime? createDate,
+  }) {
+    return GeneratorTelemetry(
+      id: id ?? this.id,
+      aqBatVol: aqBatVol ?? this.aqBatVol,
+      aqChrgVol: aqChrgVol ?? this.aqChrgVol,
+      consCur: consCur ?? this.consCur,
+      mainL1Vol: mainL1Vol ?? this.mainL1Vol,
+      mainL2Vol: mainL2Vol ?? this.mainL2Vol,
+      mainL3Vol: mainL3Vol ?? this.mainL3Vol,
+      avrPF: avrPF ?? this.avrPF,
+      oilLvl: oilLvl ?? this.oilLvl,
+      oilPrssr: oilPrssr ?? this.oilPrssr,
+      wtrTemp: wtrTemp ?? this.wtrTemp,
+      oilTemp: oilTemp ?? this.oilTemp,
+      tlRunTime: tlRunTime ?? this.tlRunTime,
+      ndname: ndname ?? this.ndname,
+      ndErrCode: ndErrCode ?? this.ndErrCode,
+      ndBatVol: ndBatVol ?? this.ndBatVol,
+      ndCnctSts: ndCnctSts ?? this.ndCnctSts,
+      ndEleSts: ndEleSts ?? this.ndEleSts,
+      createDate: createDate ?? this.createDate,
+    );
   }
 }

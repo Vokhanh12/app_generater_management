@@ -42,8 +42,11 @@ class _DashbroadSceenState extends State<DashboardSceen> {
           value: bloc,
           child: BlocListener<GeneratorTelemetryBloc, GeneratorTelemetryState>(
             listener: (context, state) {
-              if(state is GeneratorTelemetryUpdateSuccess){
+              if(state is GeneratorTelemetryUpdateSuccess || state is GeneratorTelemetryRealtimeUpdated){
                 bloc.add(ListGeneratorTelemetryIn1H());
+                bloc.add(ListGeneratorTelemetryIn3H());
+                bloc.add(ListGeneratorTelemetryIn1D());
+                bloc.add(ListGeneratorTelemetryIn3D());
               }
             },
             child: Column(
@@ -54,6 +57,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                     children: [
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Tên node",
                           category: "Ndname",
                           amount: "100",
@@ -62,6 +66,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Mã lỗi (0 - 255)",
                           category: "NdErrCode",
                           amount: "100",
@@ -70,6 +75,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Hiệu điện thế Pin18650",
                           category: "NdBatVol",
                           imgUrl: "png/lightning.png",
@@ -78,6 +84,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Trạng thái kết nối",
                           category: "NdCnctSts",
                           imgUrl: "png/freelance.png",
@@ -86,6 +93,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Trạng thái Node",
                           category: "NdEleSts",
                           imgUrl: "png/charger.png",
@@ -101,6 +109,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                     children: [
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Phần trăm dầu còn trong máy (%)",
                           category: "OilLvl",
                           imgUrl: "png/gas-pump.png",
@@ -109,6 +118,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Áp suất dầu (PSI)",
                           category: "OilPrssr",
                           imgUrl: "png/performance.png",
@@ -117,6 +127,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Nhiệt độ nước làm mát (*C)",
                           category: "WtrTemp",
                           imgUrl: "png/smart.png",
@@ -125,6 +136,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Nhiệt độ dầu (*C)",
                           category: "OilTemp",
                           imgUrl: "png/temperature.png",
@@ -133,6 +145,7 @@ class _DashbroadSceenState extends State<DashboardSceen> {
                       ),
                       Expanded(
                         child: StatusItem(
+                          bloc: bloc,
                           title: "Tổng thời gian chạy ",
                           category: "TlRunTime",
                           imgUrl: "png/wall-clock_5378485.png",

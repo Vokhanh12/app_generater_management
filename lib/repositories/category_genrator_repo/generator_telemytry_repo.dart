@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:app_generator_management/models/chart/generator_telemetry.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/services.dart';
 
 part 'base_generator_telemetry_repo.dart';
 
@@ -80,46 +78,52 @@ class GeneratorTelemetryRepository extends BaseGeneratorTelemetryRepository {
 
     return recentTelemetry;
   }
+@override
+Future<void> ListGeneratorTelemetryUpdate({
+  required void Function() onRealtimeUpdate,
+}) async {
+  try {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("document");
+
+    _subscription?.cancel();
+
+    _subscription = ref.onValue.listen(
+      (DatabaseEvent event) {
+        final data = event.snapshot.value as Map<dynamic, dynamic>?;
+
+        if (data != null) {
+          _generatorTelemetry.clear();
+
+          data.forEach((key, value) {
+            if (value is Map) {
+              final telemetry = GeneratorTelemetry.fromMap(
+                key,
+                Map<String, dynamic>.from(value),
+              );
+              _generatorTelemetry.add(telemetry);
+            }
+          });
+
+          // ✅ Sort by createDate ascending (oldest → newest)
+          _generatorTelemetry.sort((a, b) => a.createDate.compareTo(b.createDate));
+
+          print('✅ Real-time update: ${_generatorTelemetry.length} records');
+
+          onRealtimeUpdate();
+        }
+      },
+      onError: (error) {
+        print('❌ Real-time listener error: $error');
+      },
+    );
+  } catch (e) {
+    print('❌ Error setting up real-time listener: $e');
+  }
+}
 
   @override
-  Future<void> ListGeneratorTelemetryUpdate({
-    required void Function() onRealtimeUpdate,
-  }) async {
-    try {
-      DatabaseReference ref = FirebaseDatabase.instance.ref("document");
-
-      _subscription?.cancel();
-
-      _subscription = ref.onValue.listen(
-        (DatabaseEvent event) {
-          final data = event.snapshot.value as Map<dynamic, dynamic>?;
-
-          if (data != null) {
-            _generatorTelemetry.clear();
-
-            data.forEach((key, value) {
-              if (value is Map) {
-                final telemetry = GeneratorTelemetry.fromMap(
-                  key,
-                  Map<String, dynamic>.from(value),
-                );
-                _generatorTelemetry.add(telemetry);
-              }
-            });
-
-            print('✅ Real-time update: ${_generatorTelemetry.length} records');
-
-            /// GỌI CALLBACK MỖI LẦN UPDATE
-            onRealtimeUpdate();
-          }
-        },
-        onError: (error) {
-          print('❌ Real-time listener error: $error');
-        },
-      );
-    } catch (e) {
-      print('❌ Error setting up real-time listener: $e');
-    }
+  Future<List<GeneratorTelemetry>> getLatest() async {
+    return _generatorTelemetry;
   }
 
   void dispose() {

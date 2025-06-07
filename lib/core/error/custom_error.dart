@@ -12,7 +12,7 @@ class CustomError extends Equatable {
   });
 
   @override
-  List<Object> get props => [code, message];
+  List<Object> get props => [code, message, plugin];
 
   @override
   String toString() => 'CustomError(code: $code, message: $message)';
