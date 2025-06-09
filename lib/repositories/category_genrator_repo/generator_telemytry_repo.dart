@@ -11,56 +11,78 @@ class GeneratorTelemetryRepository extends BaseGeneratorTelemetryRepository {
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn1H() async {
-    final now = DateTime.now();
-    final oneHourAgo = now.subtract(const Duration(hours: 1));
+    if (_generatorTelemetry.isEmpty) return [];
 
-    final recentTelemetry = _generatorTelemetry
-        .where((item) => item.createDate.isAfter(oneHourAgo))
+    _generatorTelemetry.sort((a, b) => b.createDate.compareTo(a.createDate));
+    final latestDate = _generatorTelemetry.first.createDate;
+
+    final oneHourBefore = latestDate.subtract(const Duration(hours: 1));
+
+    final filteredData = _generatorTelemetry
+        .where((item) => item.createDate.isAfter(oneHourBefore) && item.createDate.isBefore(latestDate))
         .toList();
 
-    print('Filtered Telemetry (past 1 hour): $recentTelemetry');
+    print('Filtered Telemetry (1h before latest data date): $filteredData');
 
-    return recentTelemetry;
+    return filteredData;
   }
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn3H() async {
-    final now = DateTime.now();
-    final threeHoursAgo = now.subtract(const Duration(hours: 3));
+    if (_generatorTelemetry.isEmpty) return [];
+
+    _generatorTelemetry.sort((a, b) => b.createDate.compareTo(a.createDate));
+    final latestDate = _generatorTelemetry.first.createDate;
+
+    final threeHoursAgo = latestDate.subtract(const Duration(hours: 3));
 
     final recentTelemetry = _generatorTelemetry
-        .where((item) => item.createDate.isAfter(threeHoursAgo))
+        .where((item) =>
+            item.createDate.isAfter(threeHoursAgo) &&
+            item.createDate.isBefore(latestDate.add(const Duration(seconds: 1))))
         .toList();
 
-    print('Filtered Telemetry (past 3 hours): $recentTelemetry');
+    print('Filtered Telemetry (past 3 hours from latest data): $recentTelemetry');
 
     return recentTelemetry;
   }
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn1D() async {
-    final now = DateTime.now();
-    final oneDayAgo = now.subtract(const Duration(days: 1));
+    if (_generatorTelemetry.isEmpty) return [];
+
+    _generatorTelemetry.sort((a, b) => b.createDate.compareTo(a.createDate));
+    final latestDate = _generatorTelemetry.first.createDate;
+
+    final oneDayAgo = latestDate.subtract(const Duration(days: 1));
 
     final recentTelemetry = _generatorTelemetry
-        .where((item) => item.createDate.isAfter(oneDayAgo))
+        .where((item) =>
+            item.createDate.isAfter(oneDayAgo) &&
+            item.createDate.isBefore(latestDate.add(const Duration(seconds: 1))))
         .toList();
 
-    print('Filtered Telemetry (past 1 day): $recentTelemetry');
+    print('Filtered Telemetry (past 1 day from latest data): $recentTelemetry');
 
     return recentTelemetry;
   }
 
   @override
   Future<List<GeneratorTelemetry>> ListGeneratorTelemetryIn3D() async {
-    final now = DateTime.now();
-    final threeDaysAgo = now.subtract(const Duration(days: 3));
+    if (_generatorTelemetry.isEmpty) return [];
+
+    _generatorTelemetry.sort((a, b) => b.createDate.compareTo(a.createDate));
+    final latestDate = _generatorTelemetry.first.createDate;
+
+    final threeDaysAgo = latestDate.subtract(const Duration(days: 3));
 
     final recentTelemetry = _generatorTelemetry
-        .where((item) => item.createDate.isAfter(threeDaysAgo))
+        .where((item) =>
+            item.createDate.isAfter(threeDaysAgo) &&
+            item.createDate.isBefore(latestDate.add(const Duration(seconds: 1))))
         .toList();
 
-    print('Filtered Telemetry (past 3 days): $recentTelemetry');
+    print('Filtered Telemetry (past 3 days from latest data): $recentTelemetry');
 
     return recentTelemetry;
   }
@@ -77,6 +99,7 @@ class GeneratorTelemetryRepository extends BaseGeneratorTelemetryRepository {
     print('Filtered Telemetry (past 7 days): $recentTelemetry');
 
     return recentTelemetry;
+    
   }
 @override
 Future<void> ListGeneratorTelemetryUpdate({

@@ -25,7 +25,8 @@ class FilterableLineChart extends StatefulWidget {
 
 class _FilterableLineChartState extends State<FilterableLineChart> {
   double _interval = 10;
-  DateFormat _dateFormat = DateFormat('HH:mm');
+  DateFormat _dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+
   DateTimeIntervalType _dateTimeIntervalType = DateTimeIntervalType.minutes;
   GeneratorTelemetryType generatorTelemetryType =
       GeneratorTelemetryType.oneHour;
@@ -112,7 +113,6 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
                                 onPressed3H: () => changeMode3H(context),
                                 onPressed1D: () => changeMode1D(context),
                                 onPressed3D: () => changeMode3D(context),
-                                onPressed7D: () => changeMode7D(context),
                               )),
                         )),
                     SizedBox(
@@ -160,7 +160,8 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
 
   void changeMode1H(BuildContext context) {
     _interval = 10;
-    _dateFormat = DateFormat('HH:mm');
+    _dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+
     _dateTimeIntervalType = DateTimeIntervalType.minutes;
     generatorTelemetryType = GeneratorTelemetryType.oneHour;
     context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn1H());
@@ -168,15 +169,17 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
 
   void changeMode3H(BuildContext context) {
     _interval = 30;
-    _dateFormat = DateFormat('HH:mm');
+    _dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+
     _dateTimeIntervalType = DateTimeIntervalType.minutes;
     generatorTelemetryType = GeneratorTelemetryType.threeHour;
     context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn3H());
   }
 
   void changeMode1D(BuildContext context) {
-    _interval = 1;
-    _dateFormat = DateFormat('HH:mm');
+    _interval = 4;
+    _dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+
     _dateTimeIntervalType = DateTimeIntervalType.hours;
     generatorTelemetryType = GeneratorTelemetryType.oneDay;
     context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn1D());
@@ -191,13 +194,7 @@ class _FilterableLineChartState extends State<FilterableLineChart> {
     print("3d");
   }
 
-  void changeMode7D(BuildContext context) {
-    _interval = 1;
-    _dateFormat = DateFormat('MM/dd');
-    _dateTimeIntervalType = DateTimeIntervalType.days;
-    generatorTelemetryType = GeneratorTelemetryType.sevenDays;
-    context.read<GeneratorTelemetryBloc>().add(ListGeneratorTelemetryIn7D());
-  }
+
 }
 
 class SecondaryTabbar extends StatefulWidget {
@@ -206,7 +203,6 @@ class SecondaryTabbar extends StatefulWidget {
   final VoidCallback onPressed3H;
   final VoidCallback onPressed1D;
   final VoidCallback onPressed3D;
-  final VoidCallback onPressed7D;
 
   const SecondaryTabbar({
     super.key,
@@ -215,7 +211,6 @@ class SecondaryTabbar extends StatefulWidget {
     required this.onPressed3H,
     required this.onPressed1D,
     required this.onPressed3D,
-    required this.onPressed7D,
   });
 
   @override
@@ -223,11 +218,11 @@ class SecondaryTabbar extends StatefulWidget {
 }
 
 class _SecondaryTabbarState extends State<SecondaryTabbar> {
-  int selectedIndex = -1;
+  int selectedIndex = 0;
 
   void _handleTap(int index, VoidCallback callback) {
     setState(() {
-      selectedIndex = (selectedIndex == index) ? -1 : index;
+      selectedIndex = (selectedIndex == index) ? 0 : index;
     });
     callback();
   }
@@ -240,7 +235,6 @@ class _SecondaryTabbarState extends State<SecondaryTabbar> {
         _buildTab("3H", 1, widget.onPressed3H),
         _buildTab("1D", 2, widget.onPressed1D),
         _buildTab("3D", 3, widget.onPressed3D),
-        _buildTab("7D", 4, widget.onPressed7D),
       ],
     );
   }

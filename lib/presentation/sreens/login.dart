@@ -146,7 +146,7 @@ class LoginForm extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) => Padding(
-                      padding: const EdgeInsets.only(left: 700, right: 700),
+                      padding: const EdgeInsets.only(left: 600, right: 600),
                       child: Dialog(
                         backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
