@@ -9,14 +9,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: FirebaseOptions(
-    apiKey: 'AIzaSyDS6J-ecyEIqxKauCXqoH_OHM_u4G0OKDE',
-    appId: '1:697316737966:web:ac47a543b29ead691d3e3f',
-    messagingSenderId: '697316737966',
-    projectId: 'app-genertor-mg',
-    authDomain: 'app-genertor-mg.firebaseapp.com',
-    databaseURL: 'https://app-genertor-mg-default-rtdb.firebaseio.com/',
-    storageBucket: 'app-genertor-mg.firebasestorage.app',
-    measurementId: 'G-NG8E4Z5WW0',
+    apiKey: '-',
+    appId: '-',
+    messagingSenderId: '-',
+    projectId: '-',
+    authDomain: '-',
+    databaseURL: '-',
+    storageBucket: '-',
+    measurementId: '-',
   ));
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
