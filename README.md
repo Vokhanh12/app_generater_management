@@ -47,3 +47,11 @@ Nhóm này là thông tin trạng thái hoặc mô tả, không cần biểu di�
 | `1055H`          | `OilTemp`   | Nhiệt độ dầu (°C)                                                         |
 | `1036H,1037H`    | `TlRunTime` | Tổng thời gian chạy của máy phát                                          |
 ```
+
+# Những màn hình
+
+<img width="1710" alt="Screenshot 2025-06-24 at 21 52 33" src="https://github.com/user-attachments/assets/921a380b-7a73-40f2-9202-b84a867dc786" />
+<img width="1708" alt="Screenshot 2025-06-24 at 21 52 04" src="https://github.com/user-attachments/assets/0c853fc9-3db3-4b75-b6fe-1a898d53c138" />
+<img width="1710" alt="Screenshot 2025-06-24 at 21 51 06" src="https://github.com/user-attachments/assets/02314704-0e1a-481e-911f-6bbba7087aaf" />
+<img width="1704" alt="Screenshot 2025-06-24 at 21 31 53" src="https://github.com/user-attachments/assets/a11a2fff-5dcc-4ad2-8ae9-d2532e9d7153" />
+
